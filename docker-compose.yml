@@ -1,0 +1,25 @@
+# WARNING: this file is not suitable for production, please use with caution
+version: '3'
+
+services:
+  api:
+    image: src
+    build: .
+    command: flask run -h 0.0.0.0
+    env_file:
+      - ./.flaskenv
+    volumes:
+      - ./src:/code/src
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+  
+  db:
+    image: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
