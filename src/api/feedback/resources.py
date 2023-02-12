@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import current_user
 
 from src.commons.constants import ALLOWED_FILE_EXTENSIONS
-from src.feedback.helpers import validate_csv_header, normalize_csv
+from src.feedback.helpers import validate_csv_header, feedback_issue_processor
 from src.feedback.service import FeedbackService
 
 
@@ -34,13 +34,19 @@ class Feedback(Resource):
         data = {
             "community": community_data,
             "created_at": float(file_name.split('.')[0]),
-            "issues": [
-                issue 
-                for issue in 
-                normalize_csv(current_app.config['UPLOAD_FOLDER'], file_name)
-            ],
             "submitted_by": current_user.id,
             "csv_path": file_path,
         }
-        FeedbackService().create_feedback(**data)
+        instance = FeedbackService().create_feedback(**data)
+
+        issues = []
+        issue_analysis = {}
+        for item in feedback_issue_processor(current_app.config['UPLOAD_FOLDER'], file_name):
+            if not item.get('age', None):
+                issue_analysis = item
+            else:
+                issues.append(item)
+        FeedbackService().update_feedback(
+            instance, issues=issues, issue_analysis=issue_analysis
+        )
         return {}, 201
