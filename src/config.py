@@ -16,3 +16,5 @@ MONGODB_SETTINGS = [{
         "password": os.getenv("DATABASE_PASSWORD"),
         "alias": os.getenv("DATABASE_ALIAS", "default"),
 }]
+
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")

@@ -17,5 +17,6 @@ RUN pip install -r requirements.txt
 RUN pip install -e .
 
 COPY src src/
+COPY files files/
 
 EXPOSE 5000

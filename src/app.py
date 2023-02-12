@@ -1,15 +1,18 @@
+import os
 from flask import Flask
 from src import manage
 from flask_mongoengine import MongoEngine
 from src.extensions import apispec
 from src.extensions import jwt
-from src.config import MONGODB_SETTINGS
+from src import config
 
 def create_app(testing=False):
     """Application factory, used to create application"""
     app = Flask("citizen_feedback")
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, config.UPLOAD_FOLDER)
+    app.config['MAX_CONTENT_LENGTH'] = 12 * 1024 * 1024
     app.config.from_object("src.config")
-    app.config["MONGODB_SETTINGS"] = MONGODB_SETTINGS
+    app.config["MONGODB_SETTINGS"] = config.MONGODB_SETTINGS
     MongoEngine().init_app(app)
 
     if testing is True:
@@ -56,5 +59,7 @@ def register_blueprints(app):
     """Register all blueprints for application"""
     from src.api.auth import blueprint as auth_blueprint
     from src.api.user import routers as user_router
+    from src.api.feedback import routers as feedback_router
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(user_router.blueprint)
+    app.register_blueprint(feedback_router.blueprint)

@@ -5,7 +5,7 @@ from src.user.schemas import UserSchema
 from src.extensions import apispec
 from .resources import UserResource, UserList
 
-blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
+blueprint = Blueprint("user", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
 
 

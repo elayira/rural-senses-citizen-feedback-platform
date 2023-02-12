@@ -20,10 +20,11 @@ class Issue(me.EmbeddedDocument):
 
 class Feedback(Document):
     """Community feedback model"""
-    community = me.DictField(me.EmbeddedDocumentField(Community))
-    issues = me.EmbeddedDocumentListField(Issue)
+    created_at = me.FloatField()
+    community = me.EmbeddedDocumentField(Community)
+    issues = me.ListField(me.EmbeddedDocumentField(Issue))
     submitted_by = me.ReferenceField(User)
-    submitted_on = me.DateField()
+    csv_path = me.StringField()
 
 
 class Message(Document):
