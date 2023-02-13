@@ -9,11 +9,12 @@ from flask_jwt_extended import (
 )
 from src.extensions import apispec
 from src.user.service import UserService
+from src.user.schemas.user import UserSchema
 from src.extensions import pwd_context, jwt
 from src.auth.helpers import revoke_token, is_token_revoked, add_token_to_database
 
 
-blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+blueprint = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 api = Api(blueprint)
 
 
@@ -74,7 +75,7 @@ def login():
     add_token_to_database(access_token, current_app.config["JWT_IDENTITY_CLAIM"])
     add_token_to_database(refresh_token, current_app.config["JWT_IDENTITY_CLAIM"])
 
-    ret = {"access_token": access_token, "refresh_token": refresh_token}
+    ret = {"access_token": access_token, "refresh_token": refresh_token, "user": UserSchema().dump(user)}
     return jsonify(ret), 200
 
 

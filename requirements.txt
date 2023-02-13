@@ -10,3 +10,4 @@ marshmallow==3.19.0
 flask-mongoengine==1.0.0
 passlib==1.7.4
 marshmallow-mongoengine==0.31.1
+flask-cors==3.0.10

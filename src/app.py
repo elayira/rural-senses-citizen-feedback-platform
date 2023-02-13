@@ -2,17 +2,20 @@ import os
 from flask import Flask
 from src import manage
 from flask_mongoengine import MongoEngine
-from src.extensions import apispec
-from src.extensions import jwt
+from flask_cors import CORS
+from src.extensions import apispec, jwt, rbac
 from src import config
 
 def create_app(testing=False):
     """Application factory, used to create application"""
     app = Flask("citizen_feedback")
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, config.UPLOAD_FOLDER)
     app.config['MAX_CONTENT_LENGTH'] = 12 * 1024 * 1024
     app.config.from_object("src.config")
     app.config["MONGODB_SETTINGS"] = config.MONGODB_SETTINGS
+    app.config['RBAC_USE_WHITE'] = True
+    rbac.init_app(app)
     MongoEngine().init_app(app)
 
     if testing is True:
